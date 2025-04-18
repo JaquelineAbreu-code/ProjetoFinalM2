@@ -1,4 +1,4 @@
-const questions1 = [
+const question1 = [
     {
         question: "1. Qual palavra-chave é usada para declarar uma variável em JavaScript?",
         answers: [
@@ -10,7 +10,7 @@ const questions1 = [
     },
 ]
 
-const questions2 = [
+const question2 = [
     {
         question: "2. Qual método é usado para exibir uma mensagem no console do navegador?",
         answers: [
@@ -23,7 +23,7 @@ const questions2 = [
 ]
 
 
-const questions3 = [
+const question3 = [
     {
         question: "3. Qual método é usado para remover o último elemento de um array em JavaScript?",
         answers: [
@@ -36,7 +36,7 @@ const questions3 = [
 ]
 
 
-const questions4 = [
+const question4 = [
     {
         question: "4. Qual destes métodos pode ser usado para converter uma string em um número inteiro em JavaScript?",
         answers: [
@@ -48,7 +48,7 @@ const questions4 = [
     },
 ]
 
-const questions5 = [
+const question5 = [
     {
         question: "5. Como você remove o primeiro elemento de um array em JavaScript?",
         answers: [
@@ -87,18 +87,64 @@ function resetState(){
 
 function showQuestion(){
     resetState()
-    let currentQuestion = questions(currentQuestionIndex);
+    let currentQuestion =  question[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
-    questionElement.innerHTML = questionNo + "," + currentQuestion.question;
+    questionElement.innerHTML = questionNo + "." + currentQuestion.question;
 
     currentQuestion.answers.forEach(answers => {
         const button = document.createElement("button");
         button.innerHTML = answers.text;
         button.dataset.id = answers.id;
         button.classList.add("btn");
+        button.addEventListener("click", selectAnswer);
         answerButtons.appendChild(button);
     });
 
 }
 
-startQuiz();
+function selectAnswer (e){
+    answers = question1, question2, question3, question4, question5[currentQuestionIndex].answers;
+    const correctAnswer = answers.filter((answers) =>answers.correct ==true)[0];
+
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.id == correctAnswer.id;
+
+    if(isCorrect){
+        selectedBtn.classList.add("correct");
+        score++;
+    }else {
+        selectedBtn.classList.add("incorrect");
+    }
+
+    Array.from(answerButtons.children).forEach((button) => {
+        button.disabled = true;
+    });
+
+    nextButton.style.display = "block";
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML = `Você acertou ${score} de ${question.lenght}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display =  "block"
+}
+
+function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < question.lenght){
+        showQuestion();
+} else {
+    showScore();
+}}
+
+
+nextButton.addEventListener("click", () =>{
+    if(currentQuestionIndex < question.lenght){
+handleNextButton();
+    }else {
+        startQuiz();
+    }
+})
+
+startQuiz();;
